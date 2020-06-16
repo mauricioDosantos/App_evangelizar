@@ -1,8 +1,10 @@
+# API do python
 import sqlite3
+# Função criada na pasta raiz.
 from interfaces import *
 
-
-def criar_bd():  # criação do banco de dados
+# Função que cria o banco de dados.
+def criar_bd():
     # conecta ao banco de dados
     conecao = sqlite3.connect('banco_de_dados.db')  # conecta com o banco de dados
     c = conecao.cursor()
@@ -62,9 +64,11 @@ def verificacao(dados):
     conecao = sqlite3.connect('banco_de_dados.db')  # conecta com o banco de dados
     c = conecao.cursor()
     # Consultando banco de dados
-    c.execute('SELECT nome,senha FROM pessoa WHERE nome=? and senha=?', dados[0], dados[1])
+    c.execute('SELECT nome,senha FROM pessoa WHERE nome=? and senha=?;', dados[0], dados[1])
     pessoa = c.fetchall()
-    if(nome == pessoa[1] and senha == pessoa[5]):# tenho que fazer uma verificacao para saber se e senha ou conta erradas
+
+    # verifica se a senha ou conta estão no banco de dados
+    if(dados[0] == pessoa[1] and dados[1] == pessoa[5]):
         print('Verificado com sucesso.')
         print('Entrando.')
         blog()
