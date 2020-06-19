@@ -1,3 +1,3 @@
 from interfaces import *
 
-menu()
+tela_menu()

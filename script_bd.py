@@ -3,6 +3,7 @@ import sqlite3
 # Função criada na pasta raiz.
 from interfaces import *
 
+
 # Função que cria o banco de dados.
 def criar_bd():
     # conecta ao banco de dados
@@ -12,21 +13,30 @@ def criar_bd():
     # criação das tabelas referente aos agentes do sistema.
     c.execute('''CREATE table admin(id INTEGER PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
                 rua varchar(40),numCasa int,email varchar(100),senha varchar(30),
-                tst_seguranca varchar(40));''')  # Este comando cria a tabela Admin
+                tst_seguranca varchar(40));''')  # Cria a tabela Admin
 
     c.execute('''CREATE tale author(id INTEGER PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
                 rua varchar(40),numCasa int,email varchar(100),senha varchar(30),formacao varchar(200)
-                data_de_inicio int,assinatura varchar(100));''')  # Este comando cria a tabela Autor
+                data_de_inicio int,assinatura varchar(100));''')  # Cria a tabela Autor
 
     c.execute('''CREATE tale user(id INTEGER PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
-                rua varchar(40),numCasa int,email varchar(100),senha varchar(30));''')
+                rua varchar(40),numCasa int,email varchar(100),senha varchar(30));''') # Cria a tabela Autor
 
     # tabelas que são vinculadas a algum agente do sistema.
-    c.execute('''CREATE table post(id INTEGER PRIMARY KEY AUTOINCREMENT,id_autor int foreign key,texto text,
-                dataCri int,dataPub int,referencias text);''')
+    c.execute('''CREATE table post(id INTEGER PRIMARY KEY AUTOINCREMENT,id_autor int,texto text,
+                dataCri int,dataPub int,referencias text,FOREINGN KEY(id_author) references author(id)
+                ON DELETE CASCADE);''')
 
-    c.execute('''CREATE table indicated(id INTEGER PRIMARY KEY AUTOINCREMENT,id_admin int foreign key,
-                texto text,referencias text,link text);''')
+    c.execute('''CREATE table indicated(id INTEGER PRIMARY KEY AUTOINCREMENT,id_admin int,
+                texto text,referencias text,link text,FOREIGN KEY(id_admin) references admin(id));''')
+
+    c.execute('''CREATE table game(id INTEGER PRIMARY KEY AUTOINCREMENT,fase int, pontos int);''')
+
+    c.execute('''CREATE table game_user(id INTEGER PRIMARY KEY AUTOINCREMENT,id_user int,fase int, pontos int,
+                FOREIGN KEY(id_user) references user(id) ON DELETE CASCADE);''')
+
+    c.execute('''CREATE table game_author(id INTEGER PRIMARY KEY AUTOINCREMENT,id_author int,fase int, pontos int,
+                FOREIGN KEY(id_author) references author(id) ON DELETE CASCADE);''')
 
     conecao.commit()
     conecao.close()
