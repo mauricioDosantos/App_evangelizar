@@ -11,32 +11,39 @@ def criar_bd():
     c = conecao.cursor()
 
     # criação das tabelas referente aos agentes do sistema.
-    c.execute('''CREATE table admin(id INTEGER PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
+    c.execute('''CREATE table admin(id int PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
                 rua varchar(40),numCasa int,email varchar(100),senha varchar(30),
                 tst_seguranca varchar(40));''')  # Cria a tabela Admin
 
-    c.execute('''CREATE tale author(id INTEGER PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
+    c.execute('''CREATE tale author(id int PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
                 rua varchar(40),numCasa int,email varchar(100),senha varchar(30),formacao varchar(200)
                 data_de_inicio int,assinatura varchar(100));''')  # Cria a tabela Autor
 
-    c.execute('''CREATE tale user(id INTEGER PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
+    c.execute('''CREATE tale user(id int PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
                 rua varchar(40),numCasa int,email varchar(100),senha varchar(30));''') # Cria a tabela Autor
 
     # tabelas que são vinculadas a algum agente do sistema.
-    c.execute('''CREATE table post(id INTEGER PRIMARY KEY AUTOINCREMENT,id_autor int,texto text,
+    c.execute('''CREATE table post(id int PRIMARY KEY AUTOINCREMENT,id_autor int,texto text,
                 dataCri int,dataPub int,referencias text,FOREINGN KEY(id_author) references author(id)
                 ON DELETE CASCADE);''')
 
-    c.execute('''CREATE table indicated(id INTEGER PRIMARY KEY AUTOINCREMENT,id_admin int,
+    c.execute('''CREATE table indicated(id int PRIMARY KEY AUTOINCREMENT,id_admin int,
                 texto text,referencias text,link text,FOREIGN KEY(id_admin) references admin(id));''')
 
-    c.execute('''CREATE table game(id INTEGER PRIMARY KEY AUTOINCREMENT,fase int, pontos int);''')
-
-    c.execute('''CREATE table game_user(id INTEGER PRIMARY KEY AUTOINCREMENT,id_user int,fase int, pontos int,
-                FOREIGN KEY(id_user) references user(id) ON DELETE CASCADE);''')
-
-    c.execute('''CREATE table game_author(id INTEGER PRIMARY KEY AUTOINCREMENT,id_author int,fase int, pontos int,
+    c.execute('''CREATE table game(id_user int,id_author int,fase int, pontos int,
+                FOREIGN KEY(id_user) references user(id) ON DELETE CASCADE,
                 FOREIGN KEY(id_author) references author(id) ON DELETE CASCADE);''')
+
+    c.execute('''CREATE table schedule(id_user int,id_author int,l1c1 varchar(50),l1c2 varchar(50),
+    l1c3 varchar(50),l1c4 varchar(50),l1c5 varchar(50),l1c6 varchar(50),l1c7 varchar(50),l2c1 varchar(50),
+    l2c2 varchar(50),l2c3 varchar(50),l2c4 varchar(50),l2c5 varchar(50),l2c6 varchar(50),l2c7 varchar(50),
+    l3c1 varchar(50),l3c2 varchar(50),l3c3 varchar(50),l3c4 varchar(50),l3c5 varchar(50),l3c6 varchar(50),
+    l3c7 varchar(50),l4c1 varchar(50),l4c2 varchar(50),l4c3 varchar(50),l4c4 varchar(50),l4c5 varchar(50),
+    l4c6 varchar(50),l4c7 varchar(50),l5c1 varchar(50),l5c2 varchar(50),l5c3 varchar(50),l5c4 varchar(50),
+    l5c5 varchar(50),l5c6 varchar(50),l5c7 varchar(50),l6c1 varchar(50),l6c2 varchar(50),l6c3 varchar(50),
+    l6c4 varchar(50),l6c5 varchar(50),l6c6 varchar(50),l6c7 varchar(50),
+    FOREIGN KEY(id_user) REFERENCES user(id),
+    FOREIGN KEY(id_author) REFERENCES author(id));''')
 
     conecao.commit()
     conecao.close()
