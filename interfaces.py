@@ -1,29 +1,36 @@
-from modulos.classes import *
+import time
 from script_bd import *
-from main import *
 
 
 # Função de introdução do aplicativo.
-def boas_vindas():
-    print("SEJA BEM VINDO(A)!")
+def tela():
+    for i in range(0, 19):
+        print('=', end='+')
 
-    # para fazer testes, 0 para ilustrar, mas será algum dado do sistema
-    return 0
+
+def boas_vindas():
+    tela()
+    print('\n')
+    time.sleep(1)
+    print("           SEJA BEM VINDO(A)!\n")
+    time.sleep(1)
+    tela()
+    print('\n')
 
 
 # Função menu
-def menu():
-    print('================== // ==================')
-    print('   1-Acessar             2-Jogo')
-    print('================== // ==================')
-    print('   3-Blog                4-Compartilhar')
-    print('================== // ==================')
-    print('   5-Indicados           6-Cronograma')
-    print('================== // ==================\n')
-    print('                0-Sair')
-    print('\n================== // ==================')
+def tela_menu():
+    tela()
+    print('\n   1-Acessar           2-Jogo')
+    tela()
+    print('\n   3-Blog              4-Compartilhar')
+    tela()
+    print('\n   5-Indicados         6-Cronograma')
+    tela()
+    print('\n              0-Sair')
+    tela()
 
-    op = int(input('\nEscolha a Opção: '))
+    op = int(input('\n\nEscolha a Opção: '))
     return op
 
 
@@ -51,6 +58,7 @@ def consulta():
     # print('======================== // ========================\n')
     consulta_bd()
     print('========================== // ============================\n')
+    return 0
 
 
 # Função para entrar no sistema
@@ -74,7 +82,7 @@ def blog():
     while True:
         print('AINDA NÃO TEMOS BLOG! \n')
         op = int(input('Digite 9 para sair: '))
-        if(op == 9):
+        if (op == 9):
             main()
             break
 
