@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Arquivo principal
 # por mauricioDosantos
 # versão 0.1
@@ -14,7 +14,7 @@ def main():
 
     while True:
         # checa se na pasta tem o arquivo: 'banco_de_dados.db'
-        if(os.path.isfile('banco_de_dados.db')):
+        if os.path.isfile('banco_de_dados.db'):
             print('Carregamento feito com sucesso!\n')
         else:
             # função para criar um banco de dados e suas tabelas
@@ -25,7 +25,7 @@ def main():
         if op == 1:
             login()
         elif op == 2:
-            pessoa = cadastrar()# cadastra e retorna um objeto adicionado na classe Pessoa
+            cadastrar()  # cadastra e retorna um objeto adicionado na classe Pessoa
         elif op == 3:
             print("Infelizmente essa função ainda não foi criada!")
         elif op == 4:

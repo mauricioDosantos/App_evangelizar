@@ -21,11 +21,11 @@ def boas_vindas():
 # Função menu
 def tela_menu():
     tela()
-    print('\n   1-Acessar           2-Jogo')
+    print('\n   1-Acessar/Cadastrar    2-Jogo')
     tela()
-    print('\n   3-Blog              4-Compartilhar')
+    print('\n   3-Blog                 4-Compartilhar')
     tela()
-    print('\n   5-Indicados         6-Cronograma')
+    print('\n   5-Indicados            6-Cronograma')
     tela()
     print('\n              0-Sair')
     tela()
@@ -33,12 +33,26 @@ def tela_menu():
     op = int(input('\n\nEscolha a Opção: '))
     return op
 
+def tela_cadas_login():
+        tela()
+        print('1-Login     2-Cadastrar')
+        tela()
+        op = input('Opção: ')
+        while op != 1 or op != 2:
+            print('Operação inválida!\n')
+            op = input('Opção: ')
+
+        if op == 1:
+            login()
+        if op == 2:
+            cadastrar()
+
+# def login():
 
 # Função cadastrar
 def cadastrar():
-    pessoa = 0
     print('========================= PÁGINA DE CADASTRO ==========================\n')
-    # numero = int(input('número de identificação: '))
+    tipo = input('Tipo de usuário(admin, author, user): ')
     nome = input('Nome: ')
     dataNas = int(input('Sua data de nascimento é *Obs: sem barra, só o número: '))
     email = input('Digite seu e-mail: ')
@@ -47,8 +61,9 @@ def cadastrar():
     numCasa = int(input('Número da sua casa: '))
 
     pessoa = (nome, dataNas, email, senha, rua, numCasa)
-    adicionar_bd(pessoa)
-    print('Os dados salvos: {}'.format(pessoa))
+    adicionar_bd(tipo, pessoa)
+    print(f'Os dados salvos: {pessoa}')
+
     return pessoa
 
 
@@ -83,7 +98,7 @@ def blog():
         print('AINDA NÃO TEMOS BLOG! \n')
         op = int(input('Digite 9 para sair: '))
         if (op == 9):
-            main()
+            #main()
             break
 
     # para fazer testes, 0 para ilustrar, mas será algum dado do sistema

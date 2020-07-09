@@ -7,28 +7,30 @@ from interfaces import *
 # Função que cria o banco de dados.
 def criar_bd():
     # conecta ao banco de dados
-    conecao = sqlite3.connect('banco_de_dados.db')  # conecta com o banco de dados
+    conecao = sqlite3.connect('banco_de_dados.db')
     c = conecao.cursor()
 
     # criação das tabelas referente aos agentes do sistema.
-    c.execute('''CREATE table admin(id int PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
-                rua varchar(40),numCasa int,email varchar(100),senha varchar(30),
-                tst_seguranca varchar(40));''')  # Cria a tabela Admin
+    # Cria a tabela Admin
+    c.execute('''CREATE table admin(id int AUTO INCREMENT,nome varchar(100),dataNas int,rua varchar(40),numCasa int,
+                email varchar(100),senha varchar(30),tst_seguranca varchar(40),PRIMARY KEY(id));''')
 
-    c.execute('''CREATE tale author(id int PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
-                rua varchar(40),numCasa int,email varchar(100),senha varchar(30),formacao varchar(200)
-                data_de_inicio int,assinatura varchar(100));''')  # Cria a tabela Autor
+    # Cria a tabela Autor
+    c.execute('''CREATE table author(id int AUTO INCREMENT,nome varchar(100),dataNas int,
+                rua varchar(40),numCasa int,email varchar(100),senha varchar(30),formacao varchar(200),
+                data_de_inicio int,assinatura varchar(100),PRIMARY KEY(id));''')
 
-    c.execute('''CREATE tale user(id int PRIMARY KEY AUTOINCREMENT,nome varchar(100),dataNas int,
-                rua varchar(40),numCasa int,email varchar(100),senha varchar(30));''') # Cria a tabela Autor
+    # Cria a tabela Usuario
+    c.execute('''CREATE table user(id int AUTO INCREMENT,nome varchar(100),dataNas int,
+                rua varchar(40),numCasa int,email varchar(100),senha varchar(30),PRIMARY KEY(id));''')
 
     # tabelas que são vinculadas a algum agente do sistema.
-    c.execute('''CREATE table post(id int PRIMARY KEY AUTOINCREMENT,id_autor int,texto text,
-                dataCri int,dataPub int,referencias text,FOREINGN KEY(id_author) references author(id)
+    c.execute('''CREATE table post(id int AUTO INCREMENT,id_author int,texto text,dataCri int,dataPub int,
+                referencias text,PRIMARY KEY(id),FOREIGN KEY(id_author) references author(id)
                 ON DELETE CASCADE);''')
 
-    c.execute('''CREATE table indicated(id int PRIMARY KEY AUTOINCREMENT,id_admin int,
-                texto text,referencias text,link text,FOREIGN KEY(id_admin) references admin(id));''')
+    c.execute('''CREATE table indicated(id int AUTO INCREMENT,id_admin int,
+                texto text,referencias text,link text,PRIMARY KEY(id),FOREIGN KEY(id_admin) references admin(id));''')
 
     c.execute('''CREATE table game(id_user int,id_author int,fase int, pontos int,
                 FOREIGN KEY(id_user) references user(id) ON DELETE CASCADE,
@@ -44,21 +46,18 @@ def criar_bd():
     l6c4 varchar(50),l6c5 varchar(50),l6c6 varchar(50),l6c7 varchar(50),
     FOREIGN KEY(id_user) REFERENCES user(id),
     FOREIGN KEY(id_author) REFERENCES author(id));''')
-
+    #  finaliza a conexão
     conecao.commit()
     conecao.close()
     return True
 
 
-def adicionar_bd(pessoa):  # DEPOIS FAZER TESTE SE REALMENTE FOI ADICIONADO A PESSOA
-    # conecta ao banco de dados
-    conecao = sqlite3.connect('banco_de_dados.db')  # conecta com o banco de dados
+def adicionar_bd(tipo, pessoa):  # todo: DEPOIS FAZER TESTE SE REALMENTE FOI ADICIONADO A PESSOA
+    conecao = sqlite3.connect('banco_de_dados.db')
     c = conecao.cursor()
 
-    # adiciona o dado
-    c.execute('INSERT INTO pessoa VALUES(?,?,?,?,?,?,?,?,?);',
-              pessoa)  # qual quer erro de não encontrar add, conecao.commit()
-    # nome = pessoa[1]
+    # adiciona os dados
+    c.execute(f'INSERT INTO {tipo} VALUES(?,?,?,?,?,?);', pessoa)
     conecao.commit()  # salva o banco de dados
 
     print('Adicionado com sucesso!')
@@ -81,11 +80,11 @@ def verificacao(dados):
     conecao = sqlite3.connect('banco_de_dados.db')  # conecta com o banco de dados
     c = conecao.cursor()
     # Consultando banco de dados
-    c.execute('SELECT nome,senha FROM pessoa WHERE nome=? and senha=?;', dados[0], dados[1])
+    c.execute(f'SELECT nome,senha FROM pessoa WHERE nome={dados[0]} and senha={dados[1]};')
     pessoa = c.fetchall()
 
     # verifica se a senha ou conta estão no banco de dados
-    if(dados[0] == pessoa[1] and dados[1] == pessoa[5]):
+    if dados[0] == pessoa[1] and dados[1] == pessoa[5]:
         print('Verificado com sucesso.')
         print('Entrando.')
         blog()
