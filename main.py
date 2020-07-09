@@ -23,9 +23,9 @@ def main():
         op = tela_menu()
         
         if op == 1:
-            login()
+            tela_cadas_login()
         elif op == 2:
-            cadastrar()  # cadastra e retorna um objeto adicionado na classe Pessoa
+            print("Infelizmente essa função ainda não foi criada!")
         elif op == 3:
             print("Infelizmente essa função ainda não foi criada!")
         elif op == 4:

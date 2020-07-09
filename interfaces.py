@@ -1,5 +1,6 @@
 import time
 from script_bd import *
+from modulos.classes import *
 
 
 # Função de introdução do aplicativo.
@@ -33,34 +34,79 @@ def tela_menu():
     op = int(input('\n\nEscolha a Opção: '))
     return op
 
-def tela_cadas_login():
-        tela()
-        print('1-Login     2-Cadastrar')
-        tela()
-        op = input('Opção: ')
-        while op != 1 or op != 2:
-            print('Operação inválida!\n')
-            op = input('Opção: ')
 
-        if op == 1:
-            login()
-        if op == 2:
-            cadastrar()
+def tela_cadas_login():
+    tela()
+    print('\n1-Login     2-Cadastrar\n')
+    tela()
+    op = int(input('\nOpção: '))
+
+    while op != 1 and op != 2:
+        print('Operação inválida!\n')
+        op = input('Opção: ')
+
+    if op == 1:
+        login()
+    if op == 2:
+        cadastrar()
+
 
 # def login():
 
 # Função cadastrar
 def cadastrar():
-    print('========================= PÁGINA DE CADASTRO ==========================\n')
-    tipo = input('Tipo de usuário(admin, author, user): ')
-    nome = input('Nome: ')
-    dataNas = int(input('Sua data de nascimento é *Obs: sem barra, só o número: '))
-    email = input('Digite seu e-mail: ')
-    senha = input('Digite uma senha: ')
-    rua = input('Rua: ')
-    numCasa = int(input('Número da sua casa: '))
+    tipo = input('Tipo de usuário(author, user): ')
+    while tipo != 'user' and tipo != 'author' and tipo != 'admin':
+        tipo = input('Tipo de usuário(author, user): ')
 
-    pessoa = (nome, dataNas, email, senha, rua, numCasa)
+    if tipo == 'user':
+        tela()  # Tela para o usuário
+        print('\nPÁGINA DE CADASTRO DO USUÁRIO\n')
+        tela()
+
+        nome = input('Nome: ')
+        dataNas = int(input('Sua data de nascimento é *Obs: sem barra, só o número: '))
+        email = input('Digite seu e-mail: ')
+        senha = input('Digite uma senha: ')
+        rua = input('Rua: ')
+        numCasa = int(input('Número da sua casa: '))
+
+        # todo: estes itens seram adicionados a classe e da classe para o banco de dados, no futuro
+        pessoa = (nome, dataNas, rua, numCasa, email, senha)
+
+    if tipo == 'author':
+        tela()
+        print('\nPÁGINA DE CADASTRO DO AUTOR\n')
+        tela()
+
+        nome = input('Nome: ')
+        dataNas = int(input('Sua data de nascimento é *Obs: sem barra, só o número: '))
+        email = input('Digite seu e-mail: ')
+        senha = input('Digite uma senha: ')
+        rua = input('Rua: ')
+        numCasa = int(input('Número da sua casa: '))
+        formacao = input('Qual sua formação?\n')
+        assinatura = input('Digite sua assinatura: ')
+
+        # todo: estes itens seram adicionados a classe e da classe para o banco de dados, no futuro
+        pessoa = (nome, dataNas, rua, numCasa, email, senha, formacao, assinatura)
+
+    if tipo == 'admin':
+        tela()
+        print('\nPÁGINA DE CADASTRO DO ADMINISTRADOR\n')
+        tela()
+
+        nome = input('Nome: ')
+        dataNas = int(input('Sua data de nascimento é *Obs: sem barra, só o número: '))
+        email = input('Digite seu e-mail: ')
+        senha = input('Digite uma senha: ')
+        rua = input('Rua: ')
+        numCasa = int(input('Número da sua casa: '))
+        tst_seguranca = input('Algo que só você sabe, para teste de segurança: ')
+
+        # todo: estes itens seram adicionados a classe e da classe para o banco de dados, no futuro
+        pessoa = (nome, dataNas, rua, numCasa, email, senha, tst_seguranca)
+
     adicionar_bd(tipo, pessoa)
     print(f'Os dados salvos: {pessoa}')
 
@@ -84,6 +130,7 @@ def login():
     dados = (nome, senha)
     print('========================== // =========================\n')
     verificacao(dados)
+
     return dados
 
 
@@ -98,7 +145,7 @@ def blog():
         print('AINDA NÃO TEMOS BLOG! \n')
         op = int(input('Digite 9 para sair: '))
         if (op == 9):
-            #main()
+            # main()
             break
 
     # para fazer testes, 0 para ilustrar, mas será algum dado do sistema

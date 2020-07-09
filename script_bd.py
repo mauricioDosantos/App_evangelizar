@@ -9,7 +9,7 @@ def criar_bd():
     # conecta ao banco de dados
     conecao = sqlite3.connect('banco_de_dados.db')
     c = conecao.cursor()
-
+    # todo: quando da um erro ele cria o banco de dados pela metade
     # criação das tabelas referente aos agentes do sistema.
     # Cria a tabela Admin
     c.execute('''CREATE table admin(id int AUTO INCREMENT,nome varchar(100),dataNas int,rua varchar(40),numCasa int,
@@ -18,7 +18,7 @@ def criar_bd():
     # Cria a tabela Autor
     c.execute('''CREATE table author(id int AUTO INCREMENT,nome varchar(100),dataNas int,
                 rua varchar(40),numCasa int,email varchar(100),senha varchar(30),formacao varchar(200),
-                data_de_inicio int,assinatura varchar(100),PRIMARY KEY(id));''')
+                assinatura varchar(100),PRIMARY KEY(id));''')
 
     # Cria a tabela Usuario
     c.execute('''CREATE table user(id int AUTO INCREMENT,nome varchar(100),dataNas int,
@@ -56,20 +56,35 @@ def adicionar_bd(tipo, pessoa):  # todo: DEPOIS FAZER TESTE SE REALMENTE FOI ADI
     conecao = sqlite3.connect('banco_de_dados.db')
     c = conecao.cursor()
 
-    # adiciona os dados
-    c.execute(f'INSERT INTO {tipo} VALUES(?,?,?,?,?,?);', pessoa)
+    if tipo == 'user':
+        # adiciona os dados
+        c.execute('INSERT INTO user(nome,dataNas,rua,numCasa,email,senha) VALUES(?,?,?,?,?,?);', pessoa)
+
+    elif tipo == 'author':
+        c.execute('''INSERT INTO author(nome,dataNas,rua,numCasa,email,senha,formacao,assinatura) 
+                    VALUES(?,?,?,?,?,?,?,?);''', pessoa)
+
+    elif tipo == 'admin':
+        c.execute('INSERT INTO admin(nome,dataNas,rua,numCasa,email,senha,tst_seguranca) VALUES(?,?,?,?,?,?,?);'
+                  , pessoa)
+
     conecao.commit()  # salva o banco de dados
 
     print('Adicionado com sucesso!')
     conecao.close()
 
 
-def consulta_bd():  # exemplo de que o dados deve vir me tupla, palavra = ('RHAT',)
-    # conecta ao banco de dados
-    conecao = sqlite3.connect('banco_de_dados.db')  # conecta com o banco de dados
+def consulta_bd():
+    conecao = sqlite3.connect('banco_de_dados.db')
     c = conecao.cursor()
+
     # Consultando banco de dados
-    c.execute('SELECT * FROM pessoa;')  # fetchall()para obter uma lista das linhas correspondentes.
+    tipos = ('user', 'author', 'admin')
+    for i in tipos:
+        # todo:se não tiver neste registro não retornar um erro, mas passar para proxima.
+        string = 'SELECT nome,senha FROM' + tipos[i] + ';'
+        c.execute(string)  # fetchall()para obter uma lista das linhas correspondentes.
+
     for linha in c.fetchall():  # c.fetchone()
         print(linha)
 
@@ -80,7 +95,10 @@ def verificacao(dados):
     conecao = sqlite3.connect('banco_de_dados.db')  # conecta com o banco de dados
     c = conecao.cursor()
     # Consultando banco de dados
-    c.execute(f'SELECT nome,senha FROM pessoa WHERE nome={dados[0]} and senha={dados[1]};')
+
+    tipos = ('user', 'author', 'admin')
+    for i in tipos:
+        c.execute(f'SELECT nome,senha FROM {tipos[i]} where nome={dados[0]} and senha={dados[1]};')
     pessoa = c.fetchall()
 
     # verifica se a senha ou conta estão no banco de dados
