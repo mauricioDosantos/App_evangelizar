@@ -1,10 +1,13 @@
 # API do python
 import sqlite3
+
 # Função criada na pasta raiz.
 from interfaces import *
 
-
 # Função que cria o banco de dados.
+from modulos.classes import *
+
+
 def criar_bd():
     # conecta ao banco de dados
     conecao = sqlite3.connect('banco_de_dados.db')
@@ -52,20 +55,31 @@ def criar_bd():
     return True
 
 
+def checa_id(tipo):
+    conecao = sqlite3.connect('banco_de_dados.db')
+    c = conecao.cursor()
+
+    string = 'SELECT id FROM ' + tipo
+    c.execute(string)
+    pessoa = c.fetchall()
+    conecao.close()
+    return len(pessoa[0])
+
+
 def adicionar_bd(tipo, pessoa):  # todo: DEPOIS FAZER TESTE SE REALMENTE FOI ADICIONADO A PESSOA
     conecao = sqlite3.connect('banco_de_dados.db')
     c = conecao.cursor()
 
     if tipo == 'user':
         # adiciona os dados
-        c.execute('INSERT INTO user(nome,dataNas,rua,numCasa,email,senha) VALUES(?,?,?,?,?,?);', pessoa)
+        c.execute('INSERT INTO user(id,nome,dataNas,rua,numCasa,email,senha) VALUES(?,?,?,?,?,?,?);', pessoa)
 
     elif tipo == 'author':
-        c.execute('''INSERT INTO author(nome,dataNas,rua,numCasa,email,senha,formacao,assinatura) 
-                    VALUES(?,?,?,?,?,?,?,?);''', pessoa)
+        c.execute('''INSERT INTO author(id,nome,dataNas,rua,numCasa,email,senha,formacao,assinatura) 
+                    VALUES(?,?,?,?,?,?,?,?,?);''', pessoa)
 
     elif tipo == 'admin':
-        c.execute('INSERT INTO admin(nome,dataNas,rua,numCasa,email,senha,tst_seguranca) VALUES(?,?,?,?,?,?,?);'
+        c.execute('INSERT INTO admin(id,nome,dataNas,rua,numCasa,email,senha,tst_seguranca) VALUES(?,?,?,?,?,?,?,?);'
                   , pessoa)
 
     conecao.commit()  # salva o banco de dados
@@ -74,60 +88,89 @@ def adicionar_bd(tipo, pessoa):  # todo: DEPOIS FAZER TESTE SE REALMENTE FOI ADI
     conecao.close()
 
 
-def consulta_bd():
-    conecao = sqlite3.connect('banco_de_dados.db')
-    c = conecao.cursor()
-
-    # Consultando banco de dados
-    tipos = ('user', 'author', 'admin')
-    for i in tipos:
-        # todo:se não tiver neste registro não retornar um erro, mas passar para proxima.
-        string = 'SELECT nome,senha FROM' + tipos[i] + ';'
-        c.execute(string)  # fetchall()para obter uma lista das linhas correspondentes.
-
-    for linha in c.fetchall():  # c.fetchone()
-        print(linha)
-
-    conecao.close()
-
-
 def verificacao(dados):
     conecao = sqlite3.connect('banco_de_dados.db')  # conecta com o banco de dados
     c = conecao.cursor()
+
     # Consultando banco de dados
-
     tipos = ('user', 'author', 'admin')
-    for i in tipos:
-        c.execute(f'SELECT nome,senha FROM {tipos[i]} where nome={dados[0]} and senha={dados[1]};')
-    pessoa = c.fetchall()
+    contador = 0
+    for i in range(len(tipos)):
+        string = "SELECT email,senha FROM " + tipos[i] + " WHERE email='" + dados[0] + "' AND senha='" + dados[1] + "';"
 
+        c.execute(string)
+        pessoa = c.fetchall()
+        if len(pessoa) == 1:
+            tipo = tipos[i]
+            print(pessoa)
+            print('Entrando...')
+            break
+
+    p = pessoa[0]
     # verifica se a senha ou conta estão no banco de dados
-    if dados[0] == pessoa[1] and dados[1] == pessoa[5]:
-        print('Verificado com sucesso.')
-        print('Entrando.')
-        blog()
-    else:
-        print('Usuário inválido.')
+    if tipo == 'user':
+        usuario_logado = Usuario(p[0], p[1], p[2], p[3], p[4], p[5], p[6])
+
+    if tipo == 'author':
+        usuario_logado = Autor(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8])
+
+    if tipo == 'admin':
+        usuario_logado = Admin(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7])
 
     conecao.close()
+    return usuario_logado
 
-# def alterar_bd(nome):
 
+def pega_dados(dados):
+    conecao = sqlite3.connect('banco_de_dados.db')
+    c = conecao.cursor()
 
-# EXEMPLO DE COMO DEVO FAZER, PARA PASSAR OS DADOS PARA O BANCO DE DADOS,  tupla
-##purchases = [('2006-03-28', 'BUY', 'IBM', 1000, 45.00),
-##             ('2006-04-05', 'BUY', 'MSFT', 1000, 72.00),
-##             ('2006-04-06', 'SELL', 'IBM', 500, 53.00),
-##            ]
-##c.executemany('INSERT INTO stocks VALUES (?,?,?,?,?)', purchases)
-##
-##Para recuperar dados após executar uma instrução SELECT, você pode tratar o cursor como um iterador , chamar o fetchone()método do cursor para recuperar uma única linha
-##correspondente ou chamar fetchall()para obter uma lista das linhas correspondentes.
+    tipos = ('user', 'author', 'admin')
+    # pega dados do banco de dados
+    for i in range(len(tipos)):
+        string = "SELECT * FROM " + tipos[i] + " WHERE email='" + dados[0] + "' AND senha='" + dados[1] + "';"
+        c.execute(string)
 
-##for row in c.execute('SELECT * FROM stocks ORDER BY price'): #execultar uma consulta ordenando por data
-##        print(row)
-##
-##('2006-01-05', 'BUY', 'RHAT', 100, 35.14)
-##('2006-03-28', 'BUY', 'IBM', 1000, 45.0)
-##('2006-04-06', 'SELL', 'IBM', 500, 53.0)
-##('2006-04-05', 'BUY', 'MSFT', 1000, 72.0)
+        pessoa = c.fetchall()
+        if len(pessoa) == 1:
+            tipo = tipos[i]
+            print(pessoa)
+            break
+
+    p = pessoa[0]
+    print(p)
+
+    # cria objetos com os dados do banco
+    if tipo == 'user':
+        user_logado = Usuario(p[0], p[1], p[2], p[3], p[4], p[5], p[6])
+
+    if tipo == 'author':
+        user_logado = Autor(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8])
+
+    if tipo == 'admin':
+        user_logado = Admin(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7])
+
+    conecao.close()
+    return user_logado
+
+'''
+EXEMPLO DE COMO DEVO FAZER, PARA PASSAR OS DADOS PARA O BANCO DE DADOS,  tupla
+
+purchases = [('2006-03-28', 'BUY', 'IBM', 1000, 45.00),
+             ('2006-04-05', 'BUY', 'MSFT', 1000, 72.00),
+             ('2006-04-06', 'SELL', 'IBM', 500, 53.00),
+            ]
+c.executemany('INSERT INTO stocks VALUES (?,?,?,?,?)', purchases)
+
+Para recuperar dados após executar uma instrução SELECT, você pode tratar o cursor como um iterador , 
+chamar o fetchone() método do cursor para recuperar uma única linha
+correspondente ou chamar fetchall()para obter uma lista das linhas correspondentes.
+
+for row in c.execute('SELECT * FROM stocks ORDER BY price'): #execultar uma consulta ordenando por data
+        print(row)
+
+('2006-01-05', 'BUY', 'RHAT', 100, 35.14)
+('2006-03-28', 'BUY', 'IBM', 1000, 45.0)
+('2006-04-06', 'SELL', 'IBM', 500, 53.0)
+('2006-04-05', 'BUY', 'MSFT', 1000, 72.0)
+'''

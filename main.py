@@ -23,7 +23,9 @@ def main():
         op = tela_menu()
         
         if op == 1:
-            tela_cadas_login()
+            # todo: aqui com true em tudo que a pessoa entrar estará logado, classe da pessoa.
+            resultado = tela_cadas_login()
+            print(resultado)
         elif op == 2:
             print("Infelizmente essa função ainda não foi criada!")
         elif op == 3:

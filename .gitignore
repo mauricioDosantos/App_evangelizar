@@ -4,3 +4,4 @@ __init__.py
 __pycache__
 Descição do sistema.txt
 teste.py
+banco_de_dados.db

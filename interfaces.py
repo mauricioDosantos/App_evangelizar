@@ -46,12 +46,11 @@ def tela_cadas_login():
         op = input('Opção: ')
 
     if op == 1:
-        login()
+        resultado = login()
     if op == 2:
-        cadastrar()
+        resultado = cadastrar()
+    return resultado
 
-
-# def login():
 
 # Função cadastrar
 def cadastrar():
@@ -59,79 +58,81 @@ def cadastrar():
     while tipo != 'user' and tipo != 'author' and tipo != 'admin':
         tipo = input('Tipo de usuário(author, user): ')
 
+    identificador = checa_id(tipo)
+
     if tipo == 'user':
         tela()  # Tela para o usuário
         print('\nPÁGINA DE CADASTRO DO USUÁRIO\n')
         tela()
 
-        nome = input('Nome: ')
-        dataNas = int(input('Sua data de nascimento é *Obs: sem barra, só o número: '))
-        email = input('Digite seu e-mail: ')
-        senha = input('Digite uma senha: ')
-        rua = input('Rua: ')
-        numCasa = int(input('Número da sua casa: '))
+        usuario_logado = Usuario()
+        usuario_logado.nome = input('\nNome: ')
+        usuario_logado.dataNas = int(input('Sua data de nascimento é *Obs: sem barra, só o número: '))
+        usuario_logado.email = input('Digite seu e-mail: ')
+        usuario_logado.senha = input('Digite uma senha: ')
+        usuario_logado.rua = input('Rua: ')
+        usuario_logado.numCasa = int(input('Número da sua casa: '))
 
         # todo: estes itens seram adicionados a classe e da classe para o banco de dados, no futuro
-        pessoa = (nome, dataNas, rua, numCasa, email, senha)
+        pessoa = (identificador, usuario_logado.nome, usuario_logado.dataNas, usuario_logado.rua,
+                  usuario_logado.numCasa, usuario_logado.email, usuario_logado.senha)
 
     if tipo == 'author':
         tela()
         print('\nPÁGINA DE CADASTRO DO AUTOR\n')
         tela()
 
-        nome = input('Nome: ')
-        dataNas = int(input('Sua data de nascimento é *Obs: sem barra, só o número: '))
-        email = input('Digite seu e-mail: ')
-        senha = input('Digite uma senha: ')
-        rua = input('Rua: ')
-        numCasa = int(input('Número da sua casa: '))
-        formacao = input('Qual sua formação?\n')
-        assinatura = input('Digite sua assinatura: ')
+        usuario_logado = Autor()
+        usuario_logado.nome = input('\nNome: ')
+        usuario_logado.dataNas = int(input('Sua data de nascimento é *Obs: sem barra, só o número: '))
+        usuario_logado.email = input('Digite seu e-mail: ')
+        usuario_logado.senha = input('Digite uma senha: ')
+        usuario_logado.rua = input('Rua: ')
+        usuario_logado.numCasa = int(input('Número da sua casa: '))
+        usuario_logado.formacao = input('Qual sua formação?\n')
+        usuario_logado.assinatura = input('Digite sua assinatura: ')
 
         # todo: estes itens seram adicionados a classe e da classe para o banco de dados, no futuro
-        pessoa = (nome, dataNas, rua, numCasa, email, senha, formacao, assinatura)
+        pessoa = (identificador, usuario_logado.nome, usuario_logado.dataNas, usuario_logado.rua,
+                  usuario_logado.numCasa, usuario_logado.email, usuario_logado.senha, usuario_logado.formacao,
+                  usuario_logado.assinatura)
 
     if tipo == 'admin':
         tela()
         print('\nPÁGINA DE CADASTRO DO ADMINISTRADOR\n')
         tela()
 
-        nome = input('Nome: ')
-        dataNas = int(input('Sua data de nascimento é *Obs: sem barra, só o número: '))
-        email = input('Digite seu e-mail: ')
-        senha = input('Digite uma senha: ')
-        rua = input('Rua: ')
-        numCasa = int(input('Número da sua casa: '))
-        tst_seguranca = input('Algo que só você sabe, para teste de segurança: ')
+        usuario_logado = Admin()
+        usuario_logado.nome = input('\nNome: ')
+        usuario_logado.dataNas = int(input('Sua data de nascimento é *Obs: sem barra, só o número: '))
+        usuario_logado.email = input('Digite seu e-mail: ')
+        usuario_logado.senha = input('Digite uma senha: ')
+        usuario_logado.rua = input('Rua: ')
+        usuario_logado.numCasa = int(input('Número da sua casa: '))
+        usuario_logado.tst_seguranca = input('Algo que só você sabe, para teste de segurança: ')
 
         # todo: estes itens seram adicionados a classe e da classe para o banco de dados, no futuro
-        pessoa = (nome, dataNas, rua, numCasa, email, senha, tst_seguranca)
+        pessoa = (identificador, usuario_logado.nome, usuario_logado.dataNas, usuario_logado.rua,
+                  usuario_logado.numCasa, usuario_logado.email, usuario_logado.senha, usuario_logado.tst_seguranca)
 
     adicionar_bd(tipo, pessoa)
     print(f'Os dados salvos: {pessoa}')
 
-    return pessoa
-
-
-def consulta():
-    print('======================== CONSULTA ========================')
-    # nome = input('Nome: ')
-    # print('======================== // ========================\n')
-    consulta_bd()
-    print('========================== // ============================\n')
-    return 0
+    return usuario_logado
 
 
 # Função para entrar no sistema
 def login():
     print('======================== LOGIN ========================\n')
-    nome = input('Digite nome: ')
+    email = input('Digite email: ')
     senha = input('Digite senha: ')
-    dados = (nome, senha)
+    dados = (email, senha)
     print('========================== // =========================\n')
-    verificacao(dados)
+    resultado = verificacao(dados)
+    if resultado:
+        usuario = pega_dados(dados)
 
-    return dados
+    return usuario
 
 
 # Função blog
